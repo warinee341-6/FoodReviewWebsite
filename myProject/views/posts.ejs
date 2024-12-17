@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>posts</title>
+    <link rel="stylesheet" href="/css/home-style.css" />
+    <link rel="stylesheet" href="/css/post-style.css" />
+    <script src="https://kit.fontawesome.com/eabac940d1.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav>
+      <div class="logo"><a href="/home">KKU GIN ZAB</a></div>
+      <div class="nav-items">
+        <ul>
+          <li><a href="/home"> Home</a></li>
+          <% if(user==="admin"){ %>
+                <li> <a href="/admin">Dashboard</a></li>
+                <% }else{%>
+                    <li> <a href="/profile/<%=user %>"> My profile</a></li>
+                    <% }%>
+          <li><a href="/logout"> Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+    <main>
+      <% posts.forEach((posts)=>{ %>
+        <% if(posts.id===id){ %>
+      <div class="main-section">
+        <% if(!posts.thumbnail){var height="style=height:0"} %>
+        <div class="image-section" <%= height %> >
+          <a href="/thumbnails/<%= posts.thumbnail %>"> <img src="/thumbnails/<%= posts.thumbnail %>" alt="" /></a>
+        </div>
+        <div class="heading-section">
+          <h1><%= posts.title %></h1>
+        </div>
+        <div class="date-time-section">
+          <div>
+             <% var days=Math.round((date-posts.date)/86400000)
+                    if(days===0){
+                       days=Math.round((date-posts.date)/3600000)
+                       if(days===0){
+                        days=Math.round((date-posts.date)/60000)
+                        if(days===0){
+                            days="Just now"
+                        }else if(days===1){
+                            days="1 minute ago"
+                        }else{
+                            days=days+" minutes ago"
+                        }
+                       }else if(days===1){
+                        days="1 hour ago"
+                       }else{
+                        days=days+" hours ago"
+                       }
+                    }
+                    else if(days===1){
+                        days="1 day ago"
+                    }
+                    else{
+                        days=days+" days ago"
+                    } %>
+            <p>
+              <span> By</span><a href="/profile/<%=posts.author%>" class="username-text" ><%=posts.author%></a><span>Published </span> <%= days %> 
+
+            </p>
+             
+               <% if(posts.author===user || user==="admin"){ %>
+                <p>
+               <a href="/posts/update/<%= posts._id %>"><i class="fa-solid fa-pen"></i></a>
+              <a href="/posts/delete/<%= posts._id %>"><i class="fa-solid fa-trash"></i></a>
+            </p>
+              <% }%>
+            
+          </div>
+          <% const red ="red" %>
+          <% const white ="whit" %>
+          <% var liked=0%>
+          
+          <p class="like-button" onclick="lcupdate()">
+            <button onclick="like(this)" class=" white 
+            <% if(posts.likedby.includes(user)){ liked=1%> 
+              <%= red %>
+              <% } %>" >
+            <i class="fa-sharp fa-solid fa-heart"></i></button> <span id="likecount"><%=posts.like%></span>  likes
+          </p>
+        </div>
+        <div class="content-section"><%= posts.content %></div>
+      </div>
+      
+
+      <span id="likedcheck" style="display: none;"><%= liked %></span>
+
+        <div class="comments-section">
+          <h3>Comments:</h3>
+          <form action="/posts/<%= posts._id %>/comments" method="POST" class="comment-form">
+              <textarea name="content" required></textarea>
+              <input type="hidden" name="author" value="<%= user %>"> 
+              <button type="submit" class="submit-comment">Submit Comment</button>
+          </form>
+          <div class="comments-list">
+              <% comments.forEach(comment => { %>
+                <div class="comment">
+                  <p>
+                      <strong class="comment-author">
+                          <a href="/profile/<%= comment.author %>" class="author-link"><%= comment.author %></a>:
+                      </strong> 
+                      <span class="comment-content"><%= comment.content %></span>
+                  </p>
+                  <p class="comment-date"><em><%= new Date(comment.date).toLocaleString() %></em></p>
+                  <% if (comment.author === user) { %>
+                    <a href="/posts/comments/delete/<%= comment._id %>"><i class="fa-solid fa-trash"></i></a>
+                  <% } %>
+              </div>              
+              <% }); %>
+          </div>
+        </div>
+      <% } }) %>
+
+    </main>
+    <form action="" method="post" id="lcform" style="display: none;">
+      <input type="text" name="likecount" id="lc" onchange="this.form.submit()">
+      <input type="submit" id="submit">
+    </form>
+
+    <script>
+      
+      var fcount
+      var likedstatus=parseInt(document.getElementById("likedcheck").innerHTML)
+      function like(x) {
+        x.classList.toggle("red");
+        var count=parseInt(document.getElementById("likecount").innerHTML)
+        if(likedstatus===0){
+        document.getElementById("likecount").innerHTML=count+1
+        fcount=parseInt(document.getElementById("likecount").innerHTML)
+        x.classList.add("white")
+        likedstatus=1
+        }
+        else{
+          document.getElementById("likecount").innerHTML=count-1
+          likedstatus=0
+        }
+        }
+       function lcupdate(){
+        document.getElementById("lc").value=fcount
+        document.getElementById("submit").click()
+
+       }
+    </script>
+  </body>
+</html>

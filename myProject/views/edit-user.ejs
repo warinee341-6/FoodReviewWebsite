@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/edit-profile-style.css">
+</head>
+<body>
+    <main>
+        <div class="edit-container">
+            <h1>Edit profile</h1>
+            <form action="" method="post" class="forms-container" enctype="multipart/form-data">
+                <div>
+                    <label for="">Username</label>
+                    <input type="text" readonly value="<%=userdata.username%>">
+                    <label for="">Full Name</label>
+                    <input type="text" readonly name="fullname" value="<%=userdata.fullname%>">
+                    <label for="">E-mail</label>
+                    <input type="text" readonly value="<%=userdata.email%>">
+                    <label for="userType">Type</label>
+                    <select name="type" id="userType" class="custom-select">
+                        <option value="user" <%= userdata.type === "user" ? "selected" : "" %>>User</option>
+                        <option value="admin" <%= userdata.type === "admin" ? "selected" : "" %>>Admin</option>
+                    </select>                    
+                    <div class="buttons">
+                        <input type="reset" value="Discard">
+                        <input type="submit" value="save">
+                    </div>
+                 </div>
+        </form>
+        </div>
+    </main>
+    
+</body>
+</html>
